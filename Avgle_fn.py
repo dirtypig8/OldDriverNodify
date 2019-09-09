@@ -21,7 +21,7 @@ class Avgle:
         url = 'https://api.avgle.com/v1/jav/{}/{}?limit={}'.format(avid, page, limit)
         rs = self.Net.Get(url=url)
         self.video_data = json.loads(rs)
-        # print(self.video_data)
+        print(self.video_data)
 
     def __get_avid_key(self, key):
         response = self.video_data
@@ -65,5 +65,7 @@ class Avgle:
 
 if __name__ == '__main__':
     # key_book = ["title", "keyword", "embedded_url", "preview_video_url"]
-    obj=Avgle('SSNI-563')
+    obj=Avgle('SSNI-5643')
     obj.get_avid_information(key="preview_video_url")
+    preview_video_url = obj.get_avid_information(key="embedded_url")
+    print(len(preview_video_url[24:]))

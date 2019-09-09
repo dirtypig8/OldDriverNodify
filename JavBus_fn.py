@@ -1,11 +1,20 @@
 from bs4 import BeautifulSoup
 from Net_fn import Net
 import re
-
+from threading import  Thread
+from queue import Queue
+import time
+from tqdm import tqdm
+import json
+import random
 
 class Javbus:
     def __init__(self):
         self.Net = Net()
+        self.Video_Page_Queue = Queue()
+        self.Video_Page_Scapre_Thread_Num = 20 #最大爬蟲線程數
+        self.Video_Page_Thread_List = []
+        self.Video_Page_Links = []
 
     def get_page_video(self, page_num):
         url = 'https://www.javbus.com/page/{}'.format(page_num)
@@ -22,14 +31,14 @@ class Javbus:
         soup = BeautifulSoup(rs, 'lxml')
         date_tags = soup.find_all('date')
 
-        tag_soup = []
+        video_List = []
         avid_pattern = re.compile(r"(\D{1,}-)")
         for tag in date_tags:
             n = avid_pattern.match(tag.string)
             if n:
-                tag_soup.append(tag.string)
+                video_List.append(tag.string)
         # print(tag_soup)
-        return tag_soup
+        return video_List
 
     def get_avid_img(self, avid):
         video_data = self.__get_ajax(avid)
@@ -109,10 +118,57 @@ class Javbus:
         video_data = {"ajax": ajax, 'img': img}
         return video_data
 
+    def get_page_max_number(self):
+        Last_Page_Num = 100
+        return int(Last_Page_Num) + 1
 
+    def Thread_Get_Page_Video(self):
+        while self.Video_Page_Queue.qsize() != 0:
+            Page_Number = self.Video_Page_Queue.get()
+            links = self.get_page_video(Page_Number)
+            for link in links:
+                self.Video_Page_Links.append(link)
+
+            time.sleep(1)
+
+    def Scrape_All_Video_Page_Link(self):
+        Page_Max = self.get_page_max_number()
+        All_Links = []
+        self.Video_Page_Links = []
+        for n in tqdm(range(1, Page_Max), desc="正在分配爬行任務"):
+            self.Video_Page_Queue.put(n)
+            # 加任務
+
+        for n in range(self.Video_Page_Scapre_Thread_Num):
+            t = Thread(target=self.Thread_Get_Page_Video)
+            t.start()
+
+            self.Video_Page_Thread_List.append(t)
+
+        Total_Mission = self.Video_Page_Queue.qsize()
+        while self.Video_Page_Queue.qsize() != 0:
+            print("爬蟲進度：{}/{}".format(self.Video_Page_Queue.qsize(),Total_Mission))
+            time.sleep(1)
+
+        f = open("Video_Page_Link.txt", 'w+')
+        f.write(json.dumps(self.Video_Page_Links))
+        f.close()
+
+    def get_random_avid(self):
+        try:
+            avid = random.choice(self.Video_Page_Links)
+            return avid
+        except:
+            return ''
 
 
 if __name__ == '__main__':
     obj = Javbus()
     # obj.get_page_video(page_num='1')
-    obj.get_avid_img('SSNI-563')
+    # obj.get_avid_img('SSNI-563')
+    obj.Scrape_All_Video_Page_Link()
+    print(obj.get_random_avid())
+    print(obj.get_random_avid())
+    print(obj.get_random_avid())
+    print(obj.get_random_avid())
+    print(obj.get_random_avid())
