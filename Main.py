@@ -14,7 +14,9 @@ class Avlinebot:
         self.linebot = LineNotify(self.ACCESS_TOKEN)
 
     def update_sources(self):
+
         while True:
+            self.linebot.send("例行同步所有資料中......")
             self.Javbus_obj.Scrape_All_Video_Page_Link()
             time.sleep(14400)
 
@@ -23,10 +25,11 @@ class Avlinebot:
         while True:
             avid = self.Javbus_obj.get_random_avid()
             if avid:
+                self.linebot.send('------------------------')
                 Avgle_obj= Avgle(avid)
                 title = Avgle_obj.get_avid_information(key="title")
                 embedded_key = Avgle_obj.get_avid_information(key="embedded_url")
-                if len(embedded_key[24:]) == 20 :
+                if len(embedded_key[24:]) == 20:
                     embedded_key = 'https://7mmtv.tv/iframe_avgle.php?code={}'.format(embedded_key[24:])
                 preview_video_url = Avgle_obj.get_avid_information(key="preview_video_url")
                 img = self.Javbus_obj.get_avid_img(avid)
