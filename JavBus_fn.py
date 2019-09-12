@@ -42,7 +42,7 @@ class Javbus:
 
     def get_avid_img(self, avid):
         video_data = self.__get_ajax(avid)
-        print(video_data['img'])
+        # print(video_data['img'])
         return video_data['img']
 
     def get_avid_magnet_url(self, avid):
@@ -162,13 +162,12 @@ class Javbus:
             return ''
 
 
+
+
 if __name__ == '__main__':
     obj = Javbus()
     # obj.get_page_video(page_num='1')
     # obj.get_avid_img('SSNI-563')
-    obj.Scrape_All_Video_Page_Link()
-    print(obj.get_random_avid())
-    print(obj.get_random_avid())
-    print(obj.get_random_avid())
-    print(obj.get_random_avid())
+    # obj.Scrape_All_Video_Page_Link()
+    # print(obj.get_random_avid())
     print(obj.get_random_avid())

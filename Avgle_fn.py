@@ -4,10 +4,9 @@ import json
 
 
 class Avgle:
-    def __init__(self, avid):
+    def __init__(self):
         self.Net = Net()
         self.video_data = {}
-        self.__get_avid_data(avid)
 
     def get_avid_information(self, key='title'):
         key_book = ["title", "keyword", "embedded_url", "preview_video_url"]
@@ -15,14 +14,16 @@ class Avgle:
             return self.__get_avid_key(key)
         return 'error key'
 
-    def __get_avid_data(self, avid):
+    def get_avid_data(self, avid):
         page = 0
         limit = 2
         url = 'https://api.avgle.com/v1/jav/{}/{}?limit={}'.format(avid, page, limit)
-        rs = self.Net.Get(url=url)
-        self.video_data = json.loads(rs)
-        print(self.video_data)
-
+        try:
+            rs = self.Net.Get(url=url)
+            self.video_data = json.loads(rs)
+            return self.video_data['success'] and self.video_data['response']['total_videos']
+        except:
+            return 0
     def __get_avid_key(self, key):
         response = self.video_data
         if response['success']:
@@ -65,7 +66,9 @@ class Avgle:
 
 if __name__ == '__main__':
     # key_book = ["title", "keyword", "embedded_url", "preview_video_url"]
-    obj=Avgle('SSNI-5643')
-    obj.get_avid_information(key="preview_video_url")
-    preview_video_url = obj.get_avid_information(key="embedded_url")
-    print(len(preview_video_url[24:]))
+    obj=Avgle()
+    if obj.get_avid_data('VEC-380'):
+        print('success')
+    # obj.get_avid_information(key="preview_video_url")
+    # preview_video_url = obj.get_avid_information(key="embedded_url")
+    # print(len(preview_video_url[24:]))
