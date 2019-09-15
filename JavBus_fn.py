@@ -119,7 +119,7 @@ class Javbus:
         return video_data
 
     def get_page_max_number(self):
-        Last_Page_Num = 100
+        Last_Page_Num = 120
         return int(Last_Page_Num) + 1
 
     def Thread_Get_Page_Video(self):
@@ -161,13 +161,40 @@ class Javbus:
         except:
             return ''
 
+    def get_random_genre_video(self, genre):
+        while True:
+            page = random.randint(1, 100)
+            url = 'https://www.javbus.com/genre/{}/{}'.format(genre, page)
+            header = [
+                ('User-Agent',
+                 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.101 Safari/537.36'),
+                ('Host', 'www.javbus.com'),
+                ('Connection', 'close'),
+                ('X-Requested-With', 'XMLHttpRequest'),
+                ('Referer', url)
+            ]
+            video_List = []
+            try:
+                rs = self.Net.Get(url=url, header=header)
+                soup = BeautifulSoup(rs, 'lxml')
+                date_tags = soup.find_all('date')
+                avid_pattern = re.compile(r"(\D{1,}-)")
 
+                for tag in date_tags:
+                    n = avid_pattern.match(tag.string)
+                    if n:
+                        video_List.append(tag.string)
+            except:
+                video_List = []
+
+            if video_List:
+                return random.choice(video_List)
 
 
 if __name__ == '__main__':
     obj = Javbus()
     # obj.get_page_video(page_num='1')
     # obj.get_avid_img('SSNI-563')
-    # obj.Scrape_All_Video_Page_Link()
+    obj.Scrape_All_Video_Page_Link()
     # print(obj.get_random_avid())
-    print(obj.get_random_avid())
+    # print(obj.get_random_genre_video(45))
