@@ -1,6 +1,7 @@
 from LineBot import LineNotify
 from JavBus_fn import Javbus
 from Avgle_fn import Avgle
+from Seven_mm_fn import Seven_mm
 from threading import Thread
 from ConfigsFromFile import *
 import time
@@ -10,6 +11,7 @@ class Avlinebot:
     def __init__(self):
         self.Javbus_obj = Javbus()
         self.avgle_obj = Avgle()
+        self.Seven_mm = Seven_mm()
         self.config_content = ConfigsFromFile('config.ini')
         self.ACCESS_TOKEN = self.config_content.get_config_if_exist('line', 'access_token')
         self.send_random_avid_to_line_sleep = int(self.config_content.get_config_if_exist('system', 'send_random_avid_to_line_sleep'))
@@ -62,7 +64,8 @@ class Avlinebot:
         preview_video_url = self.avgle_obj.get_avid_information(key="preview_video_url")
         keyword = self.avgle_obj.get_avid_information(key="keyword")
         img = self.Javbus_obj.get_avid_img(avid)
-        message = '\n番號: {}\n女優: {}\n片名: {}\n線上看全片:\n {}\n\n試看:\n {}'.format(avid, keyword, title, embedded_key,preview_video_url)
+        Seven_mm_url = self.Seven_mm.get_avid_url(avid)
+        message = '\n番號: {}\n女優: {}\n片名: {}\n線上看全片:\n {}\n7mm: \n{}\n\n試看:\n {}'.format(avid, keyword, title, embedded_key, Seven_mm_url, preview_video_url)
         self.linebot.send(message=message, image_url=img)
         return 1
 

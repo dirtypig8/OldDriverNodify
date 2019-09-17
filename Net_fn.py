@@ -1,5 +1,7 @@
 import urllib.request
 import urllib.parse
+import requests
+import json
 
 class Net:
     def __init__(self):
@@ -13,5 +15,11 @@ class Net:
         opener.addheaders = header
         urllib.request.install_opener(opener)
         rs = urllib.request.urlopen(url).read().decode('utf-8')
+
+        return rs
+
+    def Post(self, url, header="", data=""):
+
+        rs = requests.post(url, data=data, headers=header)
 
         return rs
