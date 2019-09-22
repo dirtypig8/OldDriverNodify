@@ -1,6 +1,5 @@
-from bs4 import BeautifulSoup
-from Net_fn import Net
 import json
+from Net_fn import Net
 
 
 class Avgle:
@@ -22,53 +21,29 @@ class Avgle:
             rs = self.Net.Get(url=url)
             self.video_data = json.loads(rs)
             return self.video_data['success'] and self.video_data['response']['total_videos']
+
         except:
             return 0
+
     def __get_avid_key(self, key):
         response = self.video_data
-        if response['success']:
-            videos = response['response']['videos']
-            # print("avgle返回的videos为：")
-            if videos != []:
-                # print(videos[0][key])
-                return videos[0][key]
-            else:
-                return "SUCCESS,BUT NOT GET"
-        else:
+
+        if not response['success']:
             return "FAIL"
 
-    def getPreview(avid):
-        '''avgle.com获取预览视频'''
-        AVGLE_SEARCH_JAV_API_URL = 'https://api.avgle.com/v1/jav/{}/{}?limit={}'
-        url = AVGLE_SEARCH_JAV_API_URL
-        query = avid
-        page = 0
-        limit = 2
-        proxy = urllib.request.ProxyHandler({'https': proxy_addr})
-        opener = urllib.request.build_opener(proxy, urllib.request.HTTPHandler)
-        opener = urllib.request.build_opener(urllib.request.HTTPHandler)
-        urllib.request.install_opener(opener)
-        response = json.loads(
-            urllib.request.urlopen(url.format(urllib.parse.quote_plus(query), page, limit)).read().decode())
-        print(response)
-        if response['success']:
-            videos = response['response']['videos']
-            # print("avgle返回的videos为：")
-            if (videos!=[]):
-                print(videos[0]["title"])
-                # return videos[0]["preview_video_url"]
-                return videos
-            else:
-                return "SUCCESS,BUT NOT GET"
+        videos = response['response']['videos']
+
+        if videos:
+            return videos[0][key]
         else:
-            return "FAIL"
+            return "SUCCESS,BUT NOT GET"
 
 
 if __name__ == '__main__':
     # key_book = ["title", "keyword", "embedded_url", "preview_video_url"]
-    obj=Avgle()
-    if obj.get_avid_data('VEC-380'):
-        print('success')
+    obj = Avgle()
+    print(obj.get_avid_data('JUY-922'))
+
     # obj.get_avid_information(key="preview_video_url")
-    # preview_video_url = obj.get_avid_information(key="embedded_url")
-    # print(len(preview_video_url[24:]))
+    title = obj.get_avid_information(key="title")
+    print(title)

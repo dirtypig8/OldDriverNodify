@@ -1,5 +1,6 @@
-import configparser
 import os
+import configparser
+
 
 class ConfigsFromFile:
     __configs = configparser.ConfigParser()

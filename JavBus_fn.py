@@ -1,12 +1,13 @@
-from bs4 import BeautifulSoup
-from Net_fn import Net
 import re
-from threading import  Thread
-from queue import Queue
 import time
-from tqdm import tqdm
 import json
 import random
+from tqdm import tqdm
+from Net_fn import Net
+from queue import Queue
+from threading import Thread
+from bs4 import BeautifulSoup
+
 
 class Javbus:
     def __init__(self):
@@ -18,14 +19,13 @@ class Javbus:
 
     def get_page_video(self, page_num):
         url = 'https://www.javbus.com/page/{}'.format(page_num)
-        header = [
-            ('User-Agent',
-             'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.101 Safari/537.36'),
-            ('Host', 'www.javbus.com'),
-            ('Connection', 'close'),
-            ('X-Requested-With', 'XMLHttpRequest'),
-            ('Referer', url)
-        ]
+        header = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.101 Safari/537.36",
+            "Host": "www.javbus.com",
+            "Connection": "close",
+            "X-Requested-With":  "XMLHttpRequest",
+            "Referer": url
+        }
 
         rs = self.Net.Get(url=url, header=header)
         soup = BeautifulSoup(rs, 'lxml')
@@ -49,14 +49,13 @@ class Javbus:
         '''获取javbus的磁力链接'''
         video_data = self.__get_ajax(avid)
         url = video_data["ajax"]
-        header = [
-            ('User-Agent',
-             'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.101 Safari/537.36'),
-            ('Host', 'www.javbus.com'),
-            ('Connection', 'close'),
-            ('X-Requested-With', 'XMLHttpRequest'),
-            ('Referer', url)
-        ]
+        header = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.101 Safari/537.36",
+            "Host": "www.javbus.com",
+            "Connection": "close",
+            "X-Requested-With":  "XMLHttpRequest",
+            "Referer": url
+        }
         rs = self.Net.Get(url=url, header=header)
         soup = BeautifulSoup(rs, 'lxml')
         print(soup.prettify())
@@ -83,14 +82,13 @@ class Javbus:
         '''获取javbus的ajax'''
 
         url = 'https://www.javbus.com/{}'.format(avid)
-        header = [
-            ('User-Agent',
-             'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.101 Safari/537.36'),
-            ('Host', 'www.javbus.com'),
-            ('Connection', 'close'),
-            ('X-Requested-With', 'XMLHttpRequest'),
-            ('Referer', url)
-        ]
+        header = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.101 Safari/537.36",
+            "Host": "www.javbus.com",
+            "Connection": "close",
+            "X-Requested-With":  "XMLHttpRequest",
+            "Referer": url
+        }
         rs = self.Net.Get(url=url, header=header)
         soup = BeautifulSoup(rs, 'lxml')
         html = soup.prettify()
@@ -165,14 +163,13 @@ class Javbus:
         while True:
             page = random.randint(1, 100)
             url = 'https://www.javbus.com/genre/{}/{}'.format(genre, page)
-            header = [
-                ('User-Agent',
-                 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.101 Safari/537.36'),
-                ('Host', 'www.javbus.com'),
-                ('Connection', 'close'),
-                ('X-Requested-With', 'XMLHttpRequest'),
-                ('Referer', url)
-            ]
+            header = {
+                "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.101 Safari/537.36",
+                "Host": "www.javbus.com",
+                "Connection": "close",
+                "X-Requested-With": "XMLHttpRequest",
+                "Referer": url
+            }
             video_List = []
             try:
                 rs = self.Net.Get(url=url, header=header)
@@ -193,8 +190,8 @@ class Javbus:
 
 if __name__ == '__main__':
     obj = Javbus()
-    # obj.get_page_video(page_num='1')
-    # obj.get_avid_img('SSNI-563')
-    obj.Scrape_All_Video_Page_Link()
+    # print(obj.get_page_video(page_num='1'))
+    # print(obj.get_avid_img('SSNI-563'))
+    # obj.Scrape_All_Video_Page_Link()
     # print(obj.get_random_avid())
     # print(obj.get_random_genre_video(45))

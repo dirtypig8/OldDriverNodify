@@ -1,6 +1,7 @@
 import os.path
 import requests
-import time
+from ConfigsFromFile import ConfigsFromFile
+
 API_URI = "https://notify-api.line.me/api/notify"
 
 
@@ -63,3 +64,16 @@ class LineNotify:
             params = {**params, "stickerId": sticker_id, "stickerPackageId": package_id}
 
         requests.post(API_URI, headers=self.headers, params=params, files=files)
+
+
+if __name__ == '__main__':
+    config_content = ConfigsFromFile('config.ini')
+    ACCESS_TOKEN = config_content.get_config_if_exist('line', 'access_token')
+    linebot = LineNotify(ACCESS_TOKEN)
+    message = ''
+    s = input('input  msg: \n')
+    while s != '#':
+        message = '{}\n{}'.format(message, s)
+        s = input()
+    print(message)
+    linebot.send(message)

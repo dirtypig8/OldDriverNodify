@@ -1,25 +1,32 @@
-from LineBot import LineNotify
-from JavBus_fn import Javbus
-from Avgle_fn import Avgle
-from Seven_mm_fn import Seven_mm
-from threading import Thread
-from ConfigsFromFile import *
 import time
 import json
+from Avgle_fn import Avgle
+from JavBus_fn import Javbus
+from threading import Thread
+from LineBot import LineNotify
+from Seven_mm_fn import Seven_mm
+from ConfigsFromFile import ConfigsFromFile
+
 
 class Avlinebot:
     def __init__(self):
+        self.config_init()
         self.Javbus_obj = Javbus()
         self.avgle_obj = Avgle()
         self.Seven_mm = Seven_mm()
-        self.config_content = ConfigsFromFile('config.ini')
-        self.ACCESS_TOKEN = self.config_content.get_config_if_exist('line', 'access_token')
-        self.send_random_avid_to_line_sleep = int(self.config_content.get_config_if_exist('system', 'send_random_avid_to_line_sleep'))
-        self.sync_javbus_sleep = int(self.config_content.get_config_if_exist('system', 'sync_javbus_sleep'))
-        self.send_new_avid_to_line_sleep = int(self.config_content.get_config_if_exist('system', 'send_new_avid_to_line_sleep'))
         self.linebot = LineNotify(self.ACCESS_TOKEN)
         self.sended_avid_list = []
         self.get_sended_avid()
+
+    def config_init(self):
+        self.config_content = ConfigsFromFile('config.ini')
+        self.ACCESS_TOKEN = self.config_content.get_config_if_exist('line', 'access_token')
+        self.send_random_avid_to_line_sleep = int(
+            self.config_content.get_config_if_exist('system', 'send_random_avid_to_line_sleep'))
+        self.sync_javbus_sleep = int(self.config_content.get_config_if_exist('system', 'sync_javbus_sleep'))
+        self.send_new_avid_to_line_sleep = int(
+            self.config_content.get_config_if_exist('system', 'send_new_avid_to_line_sleep'))
+
 
     def get_sended_avid(self):
         try:
@@ -65,7 +72,7 @@ class Avlinebot:
         keyword = self.avgle_obj.get_avid_information(key="keyword")
         img = self.Javbus_obj.get_avid_img(avid)
         Seven_mm_url = self.Seven_mm.get_avid_url(avid)
-        message = '\n番號: {}\n女優: {}\n片名: {}\n線上看全片:\n {}\n7mm: \n{}\n\n試看:\n {}'.format(avid, keyword, title, embedded_key, Seven_mm_url, preview_video_url)
+        message = '\n番號: {}\n女優: {}\n片名: {}\n\n線上看全片\nAvgle全螢幕:\n{}\n7mm_tv線上看:\n{}\n\n9秒試看:\n{}'.format(avid, keyword, title, embedded_key, Seven_mm_url, preview_video_url)
         self.linebot.send(message=message, image_url=img)
         return 1
 
@@ -80,9 +87,9 @@ class Avlinebot:
             old_page_one_avid_list = new_page_one_avid_list
             if new_avid_list and frist_send:
                 self.update_sources()
-                message = '新片番號通知: \n'
+                message = '新片番號通知: '
                 for avid in new_avid_list:
-                    message = '{} {}\n'.format(message, avid)
+                    message = '{}\n{}'.format(message, avid)
                 self.linebot.send(message=message)
             else:
                 frist_send = 1
@@ -91,8 +98,8 @@ class Avlinebot:
             time.sleep(self.send_new_avid_to_line_sleep)
 
     def __Check_sended_list(self, avid):
-        if avid in self.sended_avid_list:
-            print('{} is sended'.format(avid))
+        if avid in set(self.sended_avid_list):
+            print('{} has been sent'.format(avid))
             return 0
         else:
             return 1

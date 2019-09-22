@@ -9,11 +9,11 @@ class Shorten_url:
         self.API_USER = self.config_content.get_config_if_exist('bitly', 'API_USER')
         self.API_KEY = self.config_content.get_config_if_exist('bitly', 'API_KEY')
 
-    def bulid_shorten(self, url):
+    def build_shorten(self, url):
 
         bitly = bitly_api.Connection(self.API_USER, self.API_KEY)
         response = bitly.shorten(url)
-        if response != '':
+        if response:
             return response['url']
         else:
             return url

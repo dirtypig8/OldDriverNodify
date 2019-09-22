@@ -1,16 +1,16 @@
-from bs4 import BeautifulSoup
-from Net_fn import Net
-from Shorten_url_fn import Shorten_url
 import urllib.parse
-import json
+from Net_fn import Net
+from bs4 import BeautifulSoup
+from Shorten_url_fn import Shorten_url
+
 
 class Seven_mm:
     def __init__(self):
         self.Net = Net()
         self.short_url = Shorten_url()
 
-    def __bulid_shorten(self, url):
-        rs = self.short_url.bulid_shorten(url)
+    def __build_shorten(self, url):
+        rs = self.short_url.build_shorten(url)
         return rs
 
     def get_avid_url(self, avid):
@@ -23,15 +23,15 @@ class Seven_mm:
             "op": "search"
         }
         rs = self.Net.Post(url, data=postData, header=headers)
-        soup = BeautifulSoup(rs.text, "lxml")
+        soup = BeautifulSoup(rs, "lxml")
         try:
             avid_url = soup.find_all("", {"class":"latest-korean-box-text"})[0].find("a")["href"]
             avid_url = urllib.parse.quote(avid_url, safe='://')
-            avid_url = self.__bulid_shorten(avid_url)
+            avid_url = self.__build_shorten(avid_url)
         except:
-            avid_url = 'Not Get'
+            avid_url = 'Not get'
         return avid_url
 
 
 if __name__ == '__main__':
-    print(Seven_mm().get_avid_url('XXXXX'))
+    print(Seven_mm().get_avid_url('JUFE-077'))

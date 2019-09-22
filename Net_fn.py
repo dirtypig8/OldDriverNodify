@@ -1,25 +1,22 @@
-import urllib.request
-import urllib.parse
 import requests
-import json
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 
 class Net:
     def __init__(self):
         pass
 
-    def Get(self, url, header=""):
-        # proxy_addr = "200.165.72.98:32346"
-        opener = urllib.request.build_opener(urllib.request.HTTPHandler)
-        # proxy = urllib.request.ProxyHandler({'https': proxy_addr})
-        # opener = urllib.request.build_opener(proxy, urllib.request.HTTPHandler)
-        opener.addheaders = header
-        urllib.request.install_opener(opener)
-        rs = urllib.request.urlopen(url).read().decode('utf-8')
+    def Get(self, url, header="", cookie="", verify=False):
+
+        rs = requests.get(url, headers=header, cookies=cookie, verify=verify)
+        rs = rs.text
 
         return rs
 
-    def Post(self, url, header="", data=""):
+    def Post(self, url, header="", data="", verify=False):
 
-        rs = requests.post(url, data=data, headers=header)
+        rs = requests.post(url, data=data, headers=header, verify=verify)
+        rs = rs.text
 
         return rs
