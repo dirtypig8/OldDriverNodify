@@ -20,6 +20,8 @@ class InitializeAvLineBot:
             target=Avbot.get_new_avid
         ).start()
 
-
+        Thread(
+            target=Avbot.notify_system_info
+        ).start()
 
 

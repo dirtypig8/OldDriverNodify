@@ -5,6 +5,7 @@ from Module.Avgle_fn import Avgle
 from Module.JavBus_fn import Javbus
 from Module.LineBot import LineNotify
 from Module.Seven_mm_fn import Seven_mm
+from Module.System_info import SystemInfo
 from CoreConfig.ConfigDictionary import ConfigDictionary
 
 
@@ -14,6 +15,7 @@ class AvLineBot:
         self.Javbus_obj = Javbus()
         self.avgle_obj = Avgle()
         self.Seven_mm = Seven_mm()
+        self.SystemInfo = SystemInfo()
         self.linebot = LineNotify(self.line_access_token)
         self.sended_avid_list = []
         self.get_sended_avid()
@@ -23,6 +25,7 @@ class AvLineBot:
         self.send_random_avid_to_line_sleep = ConfigDictionary.config_dict['send_random_avid_to_line_sleep']
         self.sync_javbus_sleep = ConfigDictionary.config_dict['sync_javbus_sleep']
         self.send_new_avid_to_line_sleep = ConfigDictionary.config_dict['send_new_avid_to_line_sleep']
+        self.send_system_info_to_line_sleep = ConfigDictionary.config_dict['send_system_info_to_line_sleep']
 
     def get_sended_avid(self):
         try:
@@ -102,6 +105,15 @@ class AvLineBot:
             return 0
         else:
             return 1
+
+    def notify_system_info(self):
+        while True:
+            cpu_usage = self.SystemInfo.get_cpu_usage()
+            memory_usage = self.SystemInfo.get_memory_usage()
+            cpu_temp = self.SystemInfo.get_cpu_temp()
+            message = """\n------系統狀態------\nCPU溫度: {}\nCPU使用率: {}\n記憶體使用率: {}""".format(cpu_temp, cpu_usage, memory_usage)
+            self.linebot.send(message=message)
+            time.sleep(self.send_system_info_to_line_sleep)
 
 
 if __name__ == '__main__':

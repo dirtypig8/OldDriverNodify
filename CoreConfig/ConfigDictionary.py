@@ -20,6 +20,9 @@ class ConfigDictionary:
                 "send_new_avid_to_line_sleep": int(
                     ConfigsFromFile().get_value_with_existence_checking("system", "send_new_avid_to_line_sleep")
                 ),
+                "send_system_info_to_line_sleep": int(
+                    ConfigsFromFile().get_value_with_existence_checking("system", "send_system_info_to_line_sleep")
+                ),
                 "bitly_user": ConfigsFromFile().get_value_with_existence_checking(
                     "bitly", "user"
                 ),
