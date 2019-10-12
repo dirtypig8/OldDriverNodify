@@ -1,6 +1,6 @@
 import os.path
 import requests
-from ConfigsFromFile import ConfigsFromFile
+from CoreConfig.ConfigDictionary import ConfigDictionary
 
 API_URI = "https://notify-api.line.me/api/notify"
 
@@ -67,8 +67,7 @@ class LineNotify:
 
 
 if __name__ == '__main__':
-    config_content = ConfigsFromFile('config.ini')
-    ACCESS_TOKEN = config_content.get_config_if_exist('line', 'access_token')
+    ACCESS_TOKEN = ConfigDictionary.config_dict['line_access_token']
     linebot = LineNotify(ACCESS_TOKEN)
     message = ''
     s = input('input  msg: \n')

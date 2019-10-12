@@ -1,7 +1,7 @@
 import urllib.parse
-from Net_fn import Net
+from Module.Net_fn import Net
 from bs4 import BeautifulSoup
-from Shorten_url_fn import Shorten_url
+from Module.Shorten_url_fn import Shorten_url
 
 
 class Seven_mm:

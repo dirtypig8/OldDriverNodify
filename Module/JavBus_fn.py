@@ -3,9 +3,9 @@ import time
 import json
 import random
 from tqdm import tqdm
-from Net_fn import Net
 from queue import Queue
 from threading import Thread
+from Module.Net_fn import Net
 from bs4 import BeautifulSoup
 
 
@@ -190,7 +190,7 @@ class Javbus:
 
 if __name__ == '__main__':
     obj = Javbus()
-    # print(obj.get_page_video(page_num='1'))
+    print(obj.get_page_video(page_num='1'))
     # print(obj.get_avid_img('SSNI-563'))
     # obj.Scrape_All_Video_Page_Link()
     # print(obj.get_random_avid())

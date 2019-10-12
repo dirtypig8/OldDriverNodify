@@ -1,5 +1,5 @@
 import json
-from Net_fn import Net
+from Module.Net_fn import Net
 
 
 class Avgle:
@@ -8,7 +8,7 @@ class Avgle:
         self.video_data = {}
 
     def get_avid_information(self, key='title'):
-        key_book = ["title", "keyword", "embedded_url", "preview_video_url"]
+        key_book = ["title", "keyword", "embedded_url", "preview_video_url", "likes", "dislikes", "duration"]
         if key in key_book:
             return self.__get_avid_key(key)
         return 'error key'
@@ -20,6 +20,7 @@ class Avgle:
         try:
             rs = self.Net.Get(url=url)
             self.video_data = json.loads(rs)
+            # print(self.video_data)
             return self.video_data['success'] and self.video_data['response']['total_videos']
 
         except:
@@ -38,12 +39,32 @@ class Avgle:
         else:
             return "SUCCESS,BUT NOT GET"
 
+    def get_like_percent(self):
+        likes = self.get_avid_information(key = 'likes')
+        dislikes = self.get_avid_information(key='dislikes')
+        try:
+            like_percent = likes / (likes + dislikes) * 100
+            return ('%.2f'%like_percent)
+        except:
+            return 0
+
+    def get_duration(self):
+        # 取片長
+        second_duration = self.get_avid_information(key='duration')
+        try:
+            min_duration = second_duration // 60
+            return int(min_duration)
+        except:
+            return '取得失敗'
+
 
 if __name__ == '__main__':
     # key_book = ["title", "keyword", "embedded_url", "preview_video_url"]
     obj = Avgle()
-    print(obj.get_avid_data('JUY-922'))
+    print(obj.get_avid_data('STARS-116'))
 
     # obj.get_avid_information(key="preview_video_url")
     title = obj.get_avid_information(key="title")
+    like_percent = obj.get_duration()
     print(title)
+    print(like_percent)
