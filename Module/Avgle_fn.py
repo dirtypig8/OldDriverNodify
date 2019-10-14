@@ -1,4 +1,5 @@
 import json
+import time
 from Module.Net_fn import Net
 
 
@@ -8,7 +9,7 @@ class Avgle:
         self.video_data = {}
 
     def get_avid_information(self, key='title'):
-        key_book = ["title", "keyword", "embedded_url", "preview_video_url", "likes", "dislikes", "duration"]
+        key_book = ["title", "keyword", "embedded_url", "preview_video_url", "likes", "dislikes", "duration", "addtime"]
         if key in key_book:
             return self.__get_avid_key(key)
         return 'error key'
@@ -57,14 +58,25 @@ class Avgle:
         except:
             return '取得失敗'
 
+    def get_add_time(self):
+        add_time = self.get_avid_information(key='addtime')
+        try:
+            timeArray = time.localtime(add_time)
+            otherStyleTime = time.strftime("%Y-%m-%d", timeArray)
+            return otherStyleTime
+        except:
+            return '取得失敗'
+
 
 if __name__ == '__main__':
     # key_book = ["title", "keyword", "embedded_url", "preview_video_url"]
     obj = Avgle()
-    print(obj.get_avid_data('STARS-116'))
+    print(obj.get_avid_data('JUL-001'))
 
     # obj.get_avid_information(key="preview_video_url")
     title = obj.get_avid_information(key="title")
     like_percent = obj.get_duration()
+    get_add_time = obj.get_add_time()
     print(title)
     print(like_percent)
+    print(get_add_time)

@@ -2,12 +2,12 @@ import urllib.parse
 from Module.Net_fn import Net
 from bs4 import BeautifulSoup
 from Module.Shorten_url_fn import Shorten_url
-
+from Module.ReurlShorten import ShortenUrl
 
 class Seven_mm:
     def __init__(self):
         self.Net = Net()
-        self.short_url = Shorten_url()
+        self.short_url = ShortenUrl()
 
     def __build_shorten(self, url):
         rs = self.short_url.build_shorten(url)

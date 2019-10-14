@@ -29,6 +29,9 @@ class ConfigDictionary:
                 "bitly_key": ConfigsFromFile().get_value_with_existence_checking(
                     "bitly", "key"
                 ),
+                "reurl_key": ConfigsFromFile().get_value_with_existence_checking(
+                    "reurl", "key"
+                ),
             }
 
         except Exception:

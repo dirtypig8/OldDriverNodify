@@ -43,11 +43,11 @@ class AvLineBot:
         f.close()
 
     def update_sources(self):
-        print('START sync_javbus')
+        print('start execute sync javbus')
         try:
             self.linebot.send("例行同步所有資料中......")
             self.Javbus_obj.Scrape_All_Video_Page_Link()
-            print('sync_javbus success.......')
+            print('end execute sync javbus')
             # time.sleep(self.sync_javbus_sleep)
         except:
             print('sync_javbus error.......')
@@ -56,9 +56,9 @@ class AvLineBot:
         while True:
             avid = self.Javbus_obj.get_random_avid()
             if self.avgle_obj.get_avid_data(avid=avid) and self.__check_sended_list(avid):
-                print('START send_random_avid_to_line  avid : {}' .format(avid))
+                print('start send random avid : {}' .format(avid))
                 self.send_message(avid)
-                print('send_random_avid_to_line success..........')
+                print('end send random avid : {}'.format(avid))
                 self.add_sended_avid(avid)
                 time.sleep(self.send_random_avid_to_line_sleep)
 
@@ -73,8 +73,9 @@ class AvLineBot:
         Seven_mm_url = self.Seven_mm.get_avid_url(avid)
         like_percent = self.avgle_obj.get_like_percent()
         duration = self.avgle_obj.get_duration()
-        message = """\n番號: {}\n女優: {}\n片名: {}\n片長: {}分鐘\n推薦指數: {}%\n\n線上看全片\nAvgle全螢幕:\n{}\n7mm_tv線上看:\n{}\n\n9秒試看:\n{}"""\
-            .format(avid, keyword, title, duration, like_percent, embedded_key, Seven_mm_url, preview_video_url)
+        add_time = self.avgle_obj.get_add_time()
+        message = """\n番號: {} / {}\n女優: {}\n片名: {}\n片長: {}分鐘\n推薦指數: {}%\n\n線上看全片\nAvgle全螢幕:\n{}\n7mm_tv線上看:\n{}\n\n9秒試看:\n{}"""\
+            .format(avid, add_time, keyword, title, duration, like_percent, embedded_key, Seven_mm_url, preview_video_url)
         self.linebot.send(message=message, image_url=img)
         return 1
 
@@ -95,13 +96,13 @@ class AvLineBot:
                 self.linebot.send(message=message)
             else:
                 frist_send = 1
-                print('send_new_avid_to_line : 無更新')
+                print('無新資料')
                 # print(old_page_one_avid_list)
             time.sleep(self.send_new_avid_to_line_sleep)
 
     def __check_sended_list(self, avid):
         if avid in set(self.sended_avid_list):
-            print('{} has been sent'.format(avid))
+            print('Has be sended avid : {}'.format(avid))
             return 0
         else:
             return 1
