@@ -113,7 +113,11 @@ class AvLineBot:
             memory_usage = self.SystemInfo.get_memory_usage()
             cpu_temp = self.SystemInfo.get_cpu_temp()
             message = """\n------系統狀態------\nCPU溫度: {}\nCPU使用率: {}\n記憶體使用率: {}""".format(cpu_temp, cpu_usage, memory_usage)
-            self.linebot.send(message=message)
+            try:
+                self.linebot.send(message=message)
+            except:
+                print('notify system info : NAK')
+
             time.sleep(self.send_system_info_to_line_sleep)
 
 

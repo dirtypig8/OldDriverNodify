@@ -7,7 +7,6 @@ class ShortenUrl:
     def __init__(self):
         self.key = ConfigDictionary.config_dict['reurl_key']
         self.api_url = 'https://api.reurl.cc/shorten'
-        # self.key = '4070df69d794ea3c104b353100ba214de0d7be378d894494ab38acc62b055f6689'
         self.Net = Net()
 
     def build_shorten(self, rs_url):
