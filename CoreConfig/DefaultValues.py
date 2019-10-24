@@ -57,7 +57,7 @@ class DefaultLogPathGetter(DefaultValueGetterInterface):
     def execute(self):
         application_path = ApplicationPathGetter().execute()
 
-        log_file_name = "AccessDataController.log"
+        log_file_name = "OldDriverNodify"
         directory_of_log_file = "Logs"
 
         log_file_path = os.path.join(application_path, directory_of_log_file)

@@ -1,5 +1,5 @@
 from CoreConfig.ConfigsFromFile import *
-
+from CoreConfig.DefaultValues import *
 
 class ConfigDictionary:
     config_dict = dict()
@@ -16,6 +16,9 @@ class ConfigDictionary:
                 ),
                 "sync_javbus_sleep": int(
                     ConfigsFromFile().get_value_with_existence_checking("system", "sync_javbus_sleep")
+                ),
+                "log_path": ConfigsFromFile().get_value_with_default_padding(
+                    "system", "log_path", DefaultLogPathGetter().execute()
                 ),
                 "send_new_avid_to_line_sleep": int(
                     ConfigsFromFile().get_value_with_existence_checking("system", "send_new_avid_to_line_sleep")

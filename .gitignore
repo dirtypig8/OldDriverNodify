@@ -7,3 +7,5 @@ config.ini
 iav.py
 Video_Page_Link.txt
 sended_avid.txt
+Logs/
+sended_avid_back.txt

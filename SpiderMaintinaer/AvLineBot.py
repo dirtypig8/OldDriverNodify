@@ -1,6 +1,7 @@
 import time
 import json
 from threading import Thread
+from LogWriter import LogWriter
 from Module.Avgle_fn import Avgle
 from Module.JavBus_fn import Javbus
 from Module.LineBot import LineNotify
@@ -43,23 +44,24 @@ class AvLineBot:
         f.close()
 
     def update_sources(self):
-        print('start execute sync javbus')
+        LogWriter().write_log("start execute '{}'".format('sync javbus'))
         try:
             self.linebot.send("例行同步所有資料中......")
             self.Javbus_obj.Scrape_All_Video_Page_Link()
-            print('end execute sync javbus')
-            # time.sleep(self.sync_javbus_sleep)
         except:
-            print('sync_javbus error.......')
+            LogWriter().write_log('sync javbus error')
+
+        else:
+            LogWriter().write_log("end execute '{}'".format('sync javbus'))
 
     def execute(self):
         while True:
             avid = self.Javbus_obj.get_random_avid()
             if self.avgle_obj.get_avid_data(avid=avid) and self.__check_sended_list(avid):
-                print('start send random avid : {}' .format(avid))
+                LogWriter().write_log('start send random avid : {}' .format(avid))
                 self.send_message(avid)
-                print('end send random avid : {}'.format(avid))
                 self.add_sended_avid(avid)
+                LogWriter().write_log('end send random avid : {}'.format(avid))
                 time.sleep(self.send_random_avid_to_line_sleep)
 
     def send_message(self, avid):
@@ -83,6 +85,7 @@ class AvLineBot:
         old_page_one_avid_list = []
         frist_send = 0
         while True:
+            LogWriter().write_log('{}'.format('start get new avid'))
             new_page_one_avid_list = self.Javbus_obj.get_page_video(1)
             set_old_page_one_avid_list = set(old_page_one_avid_list)
             set_new_page_one_avid_list = set(new_page_one_avid_list)
@@ -96,13 +99,14 @@ class AvLineBot:
                 self.linebot.send(message=message)
             else:
                 frist_send = 1
-                print('無新資料')
+                LogWriter().write_log('{}'.format('not find new avid'))
                 # print(old_page_one_avid_list)
+            LogWriter().write_log('{}'.format('end get new avid'))
             time.sleep(self.send_new_avid_to_line_sleep)
 
     def __check_sended_list(self, avid):
         if avid in set(self.sended_avid_list):
-            print('Has be sended avid : {}'.format(avid))
+            LogWriter().write_log('Has be sended avid : {}'.format(avid))
             return 0
         else:
             return 1
@@ -114,10 +118,12 @@ class AvLineBot:
             cpu_temp = self.SystemInfo.get_cpu_temp()
             message = """\n------系統狀態------\nCPU溫度: {}\nCPU使用率: {}\n記憶體使用率: {}""".format(cpu_temp, cpu_usage, memory_usage)
             try:
+                LogWriter().write_log('start notify system info to line')
                 self.linebot.send(message=message)
             except:
-                print('notify system info : NAK')
-
+                LogWriter().write_log('start notify system info to line error')
+            else:
+                LogWriter().write_log('end notify system info to line')
             time.sleep(self.send_system_info_to_line_sleep)
 
 
