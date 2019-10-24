@@ -1,4 +1,5 @@
 import traceback
+import sys
 from ArgParser import ArgParser
 from LogWriter import LogWriter
 from SystemInitializer.StartServing import StartServing
@@ -22,4 +23,4 @@ if __name__ == '__main__':
 
     finally:
         LogWriter().write_log("exit program...")
-        exit(exit_code)
+        sys.exit(exit_code)
