@@ -3,7 +3,7 @@ from CoreConfig.ConfigDictionary import ConfigDictionary
 #https://github.com/jimmy927/bitly-api-python
 
 
-class Shorten_url:
+class BitlyShorten:
     def __init__(self):
         self.API_USER =  ConfigDictionary.config_dict['bitly_user']
         self.API_KEY =  ConfigDictionary.config_dict['bitly_key']

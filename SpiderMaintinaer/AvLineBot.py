@@ -7,6 +7,8 @@ from Module.JavBus_fn import Javbus
 from Module.LineBot import LineNotify
 from Module.Seven_mm_fn import Seven_mm
 from Module.System_info import SystemInfo
+from Module.ReurlShorten import ReurlShorten
+from Module.BitlyShorten import BitlyShorten
 from CoreConfig.ConfigDictionary import ConfigDictionary
 
 
@@ -17,6 +19,8 @@ class AvLineBot:
         self.avgle_obj = Avgle()
         self.Seven_mm = Seven_mm()
         self.SystemInfo = SystemInfo()
+        self.ReurlShorten = ReurlShorten()
+        self.BitlyShorten = BitlyShorten()
         self.linebot = LineNotify(self.line_access_token)
         self.sended_avid_list = []
         self.get_sended_avid()
@@ -59,6 +63,7 @@ class AvLineBot:
             avid = self.Javbus_obj.get_random_avid()
             if self.avgle_obj.get_avid_data(avid=avid) and self.__check_sended_list(avid):
                 LogWriter().write_log('start send random avid : {}' .format(avid))
+                self.Javbus_obj.get_avid_data(avid=avid)
                 self.send_message(avid)
                 self.add_sended_avid(avid)
                 LogWriter().write_log('end send random avid : {}'.format(avid))
@@ -71,14 +76,35 @@ class AvLineBot:
             embedded_key = 'https://7mmtv.tv/iframe_avgle.php?code={}'.format(embedded_key[24:])
         preview_video_url = self.avgle_obj.get_avid_information(key="preview_video_url")
         keyword = self.avgle_obj.get_avid_information(key="keyword")
-        img = self.Javbus_obj.get_avid_img(avid)
+
+        img = self.Javbus_obj.get_avid_information(key='img_url')
+        genre = self.Javbus_obj.get_avid_information(key='genre')
         Seven_mm_url = self.Seven_mm.get_avid_url(avid)
+        if Seven_mm_url:
+            Seven_mm_url = self.__build_shorten(Seven_mm_url)
         like_percent = self.avgle_obj.get_like_percent()
         duration = self.avgle_obj.get_duration()
         add_time = self.avgle_obj.get_add_time()
-        message = """\n番號: {} / {}\n女優: {}\n片名: {}\n片長: {}分鐘\n推薦指數: {}%\n\n線上看全片\nAvgle全螢幕:\n{}\n7mm_tv線上看:\n{}\n\n9秒試看:\n{}"""\
-            .format(avid, add_time, keyword, title, duration, like_percent, embedded_key, Seven_mm_url, preview_video_url)
+
+        message = """
+番號: {} / {}
+女優: {}
+片名: {}
+類型: {}
+片長: {}分鐘
+推薦指數: {}%
+        
+線上看全片
+Avgle全螢幕:
+{}
+
+7mm_tv線上看:
+{}
+        
+9秒試看:
+{}""".format(avid, add_time, keyword, title, genre, duration, like_percent, embedded_key, Seven_mm_url, preview_video_url)
         self.linebot.send(message=message, image_url=img)
+
         return 1
 
     def get_new_avid(self):
@@ -125,6 +151,14 @@ class AvLineBot:
             else:
                 LogWriter().write_log('end notify system info to line')
             time.sleep(self.send_system_info_to_line_sleep)
+
+    def __build_shorten(self, url):
+        # 短網址失敗會回傳原始url
+        shorten_url = self.ReurlShorten.build_shorten(url)
+        if shorten_url == url:
+            shorten_url = self.BitlyShorten.build_shorten(url)
+        return shorten_url
+
 
 
 if __name__ == '__main__':
