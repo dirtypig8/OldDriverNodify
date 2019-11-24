@@ -61,13 +61,15 @@ class AvLineBot:
     def execute(self):
         while True:
             avid = self.Javbus_obj.get_random_avid()
-            if self.avgle_obj.get_avid_data(avid=avid) and self.__check_sended_list(avid):
-                LogWriter().write_log('start send random avid : {}' .format(avid))
-                self.Javbus_obj.get_avid_data(avid=avid)
-                self.send_message(avid)
-                self.add_sended_avid(avid)
-                LogWriter().write_log('end send random avid : {}'.format(avid))
-                time.sleep(self.send_random_avid_to_line_sleep)
+            if self.__check_sended_list(avid):
+                if self.avgle_obj.get_avid_data(avid=avid):
+
+                    LogWriter().write_log('start send random avid : {}' .format(avid))
+                    self.Javbus_obj.get_avid_data(avid=avid)
+                    self.send_message(avid)
+                    self.add_sended_avid(avid)
+                    LogWriter().write_log('end send random avid : {}'.format(avid))
+                    time.sleep(self.send_random_avid_to_line_sleep)
 
     def send_message(self, avid):
         title = self.avgle_obj.get_avid_information(key="title")
