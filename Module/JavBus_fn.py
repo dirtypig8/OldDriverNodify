@@ -49,8 +49,13 @@ class Javbus:
         return 'error key'
 
     def get_avid_data(self, avid):
-        self.video_data = self.__get_ajax(avid)
-
+        try:
+            self.video_data = self.__get_ajax(avid)
+            print("get_avid_data success '{}'".format(self.video_data))
+            return True
+        except Exception as e:
+            print("get_avid_data fail '{}'".format(e))
+            return False
     def get_avid_magnet_url(self, avid):
         '''获取javbus的磁力链接'''
         video_data = self.__get_ajax(avid)
