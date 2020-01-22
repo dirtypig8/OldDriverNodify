@@ -4,6 +4,7 @@ from threading import Thread
 from LogWriter import LogWriter
 from Module.Avgle_fn import Avgle
 from Module.JavBus_fn import Javbus
+from Module.Getrelax import Getrelax
 from Module.LineBot import LineNotify
 from Module.Seven_mm_fn import Seven_mm
 from Module.System_info import SystemInfo
@@ -17,10 +18,12 @@ class AvLineBot:
         self.config_init()
         self.Javbus_obj = Javbus()
         self.avgle_obj = Avgle()
+        self.Getrelax = Getrelax()
         self.Seven_mm = Seven_mm()
         self.SystemInfo = SystemInfo()
         self.ReurlShorten = ReurlShorten()
         self.BitlyShorten = BitlyShorten()
+
         self.linebot = LineNotify(self.line_access_token)
         self.sended_avid_list = []
         self.get_sended_avid()
@@ -161,6 +164,34 @@ Avgle全螢幕:
             shorten_url = self.BitlyShorten.build_shorten(url)
         return shorten_url
 
+    def getrelax_get_new_avid(self):
+        while True:
+            LogWriter().write_log('{}'.format('start get new avid'))
+            self.Getrelax.Scrape_All_Video_Page_Link()
+            LogWriter().write_log('{}'.format('end get new avid'))
+            time.sleep(43200)
+
+    def getrelax_execute(self):
+        while True:
+            try:
+                avid = self.Getrelax.get_random_avid()
+                # result['video_url'] ['img_src'] ['video_name']
+                if avid != '':
+                    LogWriter().write_log('start Getrelax random avid : {}' .format(avid['video_name']))
+                    message = """
+片名
+{}
+
+線上看全片
+{}
+
+本網站目前24小時內只能看5部，持續尋找新片源中
+""".format(avid['video_name'], avid['video_url'])
+                    self.linebot.send(message=message, image_url=avid['img_src'])
+                    LogWriter().write_log('end send random avid : {}'.format(avid))
+                    time.sleep(14400)
+            except:
+                pass
 
 
 if __name__ == '__main__':
