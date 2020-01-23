@@ -166,27 +166,33 @@ Avgle全螢幕:
 
     def getrelax_get_new_avid(self):
         while True:
-            LogWriter().write_log('{}'.format('start get new avid'))
-            self.Getrelax.Scrape_All_Video_Page_Link()
-            LogWriter().write_log('{}'.format('end get new avid'))
-            time.sleep(43200)
+            try:
+                LogWriter().write_log('{}'.format('start getrelax get new avid'))
+                self.Getrelax.Scrape_All_Video_Page_Link()
+                LogWriter().write_log('{}'.format('end getrelax get new avid'))
+                time.sleep(43200)
+            except:
+                LogWriter().write_log('{}'.format('getrelax get new avid error'))
 
     def getrelax_execute(self):
         while True:
             try:
                 avid = self.Getrelax.get_random_avid()
-                # result['video_url'] ['img_src'] ['video_name']
+                # result['video_url'] ['img_src'] ['video_name'] ['video_index_url'] ['video_id']
                 if avid != '':
                     LogWriter().write_log('start Getrelax random avid : {}' .format(avid['video_name']))
                     message = """
-片名
-{}
+片名: {}
 
 線上看全片
+電腦端:
+{}
+
+手機端:
 {}
 
 本網站目前24小時內只能看5部，持續尋找新片源中
-""".format(avid['video_name'], avid['video_url'])
+""".format(avid['video_name'], avid['video_index_url'], avid['video_url'])
                     self.linebot.send(message=message, image_url=avid['img_src'])
                     LogWriter().write_log('end send random avid : {}'.format(avid))
                     time.sleep(14400)

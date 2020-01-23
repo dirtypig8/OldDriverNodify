@@ -89,7 +89,8 @@ class Getrelax:
                     # print(tag)
                     # print('----' * 20)
                     embed_url = tag.find("a")["href"]
-                    video_url = 'https://getrelax.cc/embed/{}.mp4'.format(embed_url[10:16])
+                    video_id = embed_url[10:16]
+                    video_url = 'https://getrelax.cc/embed/{}.mp4'.format(video_id)
                     # print(video_url)
 
                     video_index_url = "https://getrelax.cc/{}".format(embed_url)
@@ -113,9 +114,11 @@ class Getrelax:
 
                     if video_url != '' and img_src != '' and len(video_name) > 3:
                         result= dict()
+                        result['video_id'] = video_id
                         result['video_url'] = video_url
                         result['img_src'] = img_src
                         result['video_name'] = video_name
+                        result['video_index_url'] = video_index_url
                         video_information = result.copy()
                         video_list.append(video_information)
             except:
