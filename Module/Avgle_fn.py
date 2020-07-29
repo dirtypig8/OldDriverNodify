@@ -1,7 +1,8 @@
 import json
 import time
+import requests
 from Module.Net_fn import Net
-
+from LogWriter import LogWriter
 
 class Avgle:
     def __init__(self):
@@ -19,13 +20,20 @@ class Avgle:
         limit = 2
         url = 'https://api.avgle.com/v1/jav/{}/{}?limit={}'.format(avid, page, limit)
         try:
-            rs = self.Net.Get(url=url)
-            self.video_data = json.loads(rs)
-            # print(self.video_data)
-            return self.video_data['success'] and self.video_data['response']['total_videos']
-
-        except:
-            return 0
+            response = requests.get(url=url, verify=False, timeout=60)
+            LogWriter().write_log(
+                "get avgle avid data {}, response from server: '{}'".format(avid, response.text))
+        except Exception as e:
+            LogWriter().write_log("get avgle avid data {} fail, server exception".format(avid, e))
+            return False
+        else:
+            if response.status_code == requests.codes.ok:
+                self.video_data = json.loads(response.text)
+                print(self.video_data)
+                if self.video_data.get('success', False) is True:
+                    if self.video_data['response']['total_videos'] > 0:
+                        return True
+            return False
 
     def __get_avid_key(self, key):
         response = self.video_data
@@ -71,12 +79,12 @@ class Avgle:
 if __name__ == '__main__':
     # key_book = ["title", "keyword", "embedded_url", "preview_video_url"]
     obj = Avgle()
-    print(obj.get_avid_data('JUL-001'))
+    print(obj.get_avid_data('WANZ-973'))
 
     # obj.get_avid_information(key="preview_video_url")
-    title = obj.get_avid_information(key="title")
-    like_percent = obj.get_duration()
-    get_add_time = obj.get_add_time()
-    print(title)
-    print(like_percent)
-    print(get_add_time)
+    # title = obj.get_avid_information(key="title")
+    # like_percent = obj.get_duration()
+    # get_add_time = obj.get_add_time()
+    # print(title)
+    # print(like_percent)
+    # print(get_add_time)

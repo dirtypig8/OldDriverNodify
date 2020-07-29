@@ -8,6 +8,7 @@ from Module.Getrelax import Getrelax
 from Module.LineBot import LineNotify
 from Module.Seven_mm_fn import Seven_mm
 from Module.System_info import SystemInfo
+from Module.av01_fn import Av01_fn
 from Module.ReurlShorten import ReurlShorten
 from Module.BitlyShorten import BitlyShorten
 from CoreConfig.ConfigDictionary import ConfigDictionary
@@ -18,6 +19,7 @@ class AvLineBot:
         self.config_init()
         self.Javbus_obj = Javbus()
         self.avgle_obj = Avgle()
+        self.av01_obj = Av01_fn()
         self.Getrelax = Getrelax()
         self.Seven_mm = Seven_mm()
         self.SystemInfo = SystemInfo()
@@ -65,7 +67,8 @@ class AvLineBot:
         while True:
             avid = self.Javbus_obj.get_random_avid()
             if self.__check_sended_list(avid):
-                if self.avgle_obj.get_avid_data(avid=avid):
+                if self.avgle_obj.get_avid_data(avid=avid) is True and \
+                        len(self.av01_obj.get_avid_url(avid=avid)) > 0:
 
                     LogWriter().write_log('start send random avid : {}' .format(avid))
                     self.Javbus_obj.get_avid_data(avid=avid)
@@ -85,6 +88,8 @@ class AvLineBot:
         img = self.Javbus_obj.get_avid_information(key='img_url')
         genre = self.Javbus_obj.get_avid_information(key='genre')
         Seven_mm_url = self.Seven_mm.get_avid_url(avid)
+        av01_url = self.av01_obj.get_avid_url(avid=avid)
+
         if Seven_mm_url:
             Seven_mm_url = self.__build_shorten(Seven_mm_url)
         like_percent = self.avgle_obj.get_like_percent()
@@ -105,9 +110,12 @@ Avgle全螢幕:
 
 7mm_tv線上看:
 {}
-        
+
+av01線上看:
+{}
+
 9秒試看:
-{}""".format(avid, add_time, keyword, title, genre, duration, like_percent, embedded_key, Seven_mm_url, preview_video_url)
+{}""".format(avid, add_time, keyword, title, genre, duration, like_percent, embedded_key, Seven_mm_url, av01_url, preview_video_url)
         self.linebot.send(message=message, image_url=img)
 
         return 1
