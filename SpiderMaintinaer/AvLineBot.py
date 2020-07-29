@@ -200,7 +200,7 @@ av01線上看:
 {}
 
 本網站目前24小時內只能看5部，持續尋找新片源中
-""".format(avid['video_name'], avid['video_index_url'], avid['video_url'])
+""".format(avid['video_name'], avid['video_url'], avid['video_index_url'])
                     self.linebot.send(message=message, image_url=avid['img_src'])
                     LogWriter().write_log('end send random avid : {}'.format(avid))
                     time.sleep(14400)
